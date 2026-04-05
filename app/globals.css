@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #ffffff;
+  color: #111827;
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+}
+
+a {
+  text-underline-offset: 2px;
+}
+
+input,
+select,
+textarea {
+  @apply w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-brand-charcoal shadow-sm outline-none transition focus:border-brand-red focus:ring-2 focus:ring-brand-red/20;
+}
+
+label {
+  @apply text-sm font-medium text-brand-navy;
+}
