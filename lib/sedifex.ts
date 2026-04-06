@@ -81,6 +81,17 @@ async function sedifexFetch<T>(path: string, fallback: T): Promise<T> {
   }
 }
 
+
+function normalizeItemType(itemType?: string | null): string {
+  return (itemType || "").trim().toLowerCase();
+}
+
+export function getProductsByType(products: SedifexProduct[], type: "service" | "product"): SedifexProduct[] {
+  const normalizedType = type.toLowerCase();
+
+  return products.filter((product) => normalizeItemType(product.itemType) === normalizedType);
+}
+
 function dedupeProducts(products: SedifexProduct[]): SedifexProduct[] {
   const seen = new Set<string>();
 
@@ -216,15 +227,21 @@ export async function getGalleryData(): Promise<SedifexGalleryItem[]> {
 
 export async function getServicesData(): Promise<ServiceItem[]> {
   const products = await getProductsData();
+  const serviceProducts = getProductsByType(products, "service");
 
-  return SERVICES.map((service, index) => {
-    const external = products[index];
+  if (!serviceProducts.length) {
+    return SERVICES;
+  }
+
+  return serviceProducts.map((item, index) => {
+    const fallback = SERVICES[index % SERVICES.length];
 
     return {
-      ...service,
-      title: external?.name || service.title,
-      description: external?.description || service.description,
-      image: external?.imageUrl || service.image
+      ...fallback,
+      slug: item.id || fallback.slug,
+      title: item.name || fallback.title,
+      description: item.description || fallback.description,
+      image: item.imageUrl || fallback.image
     };
   });
 }

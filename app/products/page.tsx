@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { SectionHeading } from "@/components/section-heading";
-import { getProductsData, groupProductsByCategory } from "@/lib/sedifex";
+import { getProductsByType, getProductsData, groupProductsByCategory } from "@/lib/sedifex";
 
 export const metadata: Metadata = {
   title: "Products",
@@ -8,7 +8,8 @@ export const metadata: Metadata = {
 };
 
 export default async function ProductsPage() {
-  const products = await getProductsData();
+  const allItems = await getProductsData();
+  const products = getProductsByType(allItems, "product");
   const grouped = groupProductsByCategory(products);
 
   return (
@@ -17,10 +18,13 @@ export default async function ProductsPage() {
         <SectionHeading
           eyebrow="Products"
           title="Current product catalog"
-          description="Grouped by category from integrationProducts with fallback support when the API is unavailable."
+          description="Only products (itemType=product) grouped by category from integrationProducts."
         />
 
         <div className="mt-10 space-y-8">
+          {!products.length ? (
+            <p className="rounded-2xl border border-slate-200 bg-white p-6 text-slate-600">No products are available right now.</p>
+          ) : null}
           {Object.entries(grouped).map(([category, items]) => (
             <article key={category} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
               <h2 className="text-2xl font-bold text-brand-navy">{category}</h2>
