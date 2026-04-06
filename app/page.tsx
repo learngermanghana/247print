@@ -5,15 +5,17 @@ import { ProcessSection } from "@/components/process-section";
 import { SectionHeading } from "@/components/section-heading";
 import { ServicesGrid } from "@/components/services-grid";
 import { WhyChooseUs } from "@/components/why-choose-us";
-import { getGalleryData, getPromoData, getServicesData, getTopSellingData } from "@/lib/sedifex";
+import { getGalleryData, getProductsByType, getProductsData, getPromoData, getServicesData } from "@/lib/sedifex";
 
 export default async function HomePage() {
-  const [services, promo, gallery, topSelling] = await Promise.all([
+  const [allItems, services, promo, gallery] = await Promise.all([
+    getProductsData(),
     getServicesData(),
     getPromoData(),
-    getGalleryData(),
-    getTopSellingData(30, 8)
+    getGalleryData()
   ]);
+
+  const homepageProducts = getProductsByType(allItems, "product").slice(0, 8);
 
   return (
     <>
@@ -42,13 +44,13 @@ export default async function HomePage() {
       <section className="py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
-            eyebrow="Top performing"
-            title="Best-selling products and services"
-            description="Live top performers from Sedifex integrationTopSelling over the last 30 days."
+            eyebrow="Featured products"
+            title="Top products from our current catalog"
+            description="Homepage products are pulled from integrationProducts where itemType is product."
           />
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {topSelling.map((item) => (
-              <article key={item.productId} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            {homepageProducts.map((item) => (
+              <article key={`${item.id}-${item.storeId}`} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
                 {item.imageUrl ? (
                   <img src={item.imageUrl} alt={item.imageAlt || item.name} className="h-40 w-full object-cover" />
                 ) : (
@@ -57,7 +59,7 @@ export default async function HomePage() {
                 <div className="space-y-1 p-4">
                   <p className="text-xs font-semibold uppercase tracking-wide text-brand-red">{item.category || "General"}</p>
                   <h3 className="text-lg font-bold text-brand-navy">{item.name}</h3>
-                  <p className="text-sm text-slate-600">Sold: {item.qtySold}</p>
+                  <p className="text-sm text-slate-600">GHS {item.price}</p>
                 </div>
               </article>
             ))}
@@ -70,7 +72,7 @@ export default async function HomePage() {
           <SectionHeading
             eyebrow="Promo gallery"
             title="Recent work and campaign visuals"
-            description="Pulled from integrationGallery and sorted by configured order."
+            description="Promo gallery images are pulled directly from integrationGallery."
           />
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {gallery.slice(0, 6).map((item) => (
@@ -88,7 +90,7 @@ export default async function HomePage() {
           <SectionHeading
             eyebrow="Core services"
             title="Complete print solutions for brands, campaigns, and events"
-            description="From small runs to commercial bulk quantities, we handle diverse print requirements with consistent quality control."
+            description="Homepage services are pulled from integrationProducts where itemType is service."
             align="center"
           />
           <div className="mt-10">
