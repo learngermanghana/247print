@@ -13,6 +13,7 @@ const FALLBACK_PRODUCTS: SedifexProduct[] = SERVICES.map((service, index) => ({
   stockCount: 0,
   itemType: "service",
   imageUrl: service.image,
+  imageUrls: [service.image],
   imageAlt: service.title,
   updatedAt: null
 }));
@@ -107,6 +108,74 @@ function dedupeProducts(products: SedifexProduct[]): SedifexProduct[] {
   });
 }
 
+function uniqueValidUrls(values: Array<string | null | undefined>): string[] {
+  const seen = new Set<string>();
+
+  return values
+    .map((value) => (value || "").trim())
+    .filter((value) => {
+      if (!value || seen.has(value)) {
+        return false;
+      }
+
+      seen.add(value);
+      return true;
+    });
+}
+
+function extractProductImages(product: Record<string, unknown>): string[] {
+  const directImages = uniqueValidUrls([
+    typeof product.imageUrl === "string" ? product.imageUrl : null,
+    typeof product.imageUrl2 === "string" ? product.imageUrl2 : null,
+    typeof product.imageUrl3 === "string" ? product.imageUrl3 : null,
+    typeof product.photoUrl === "string" ? product.photoUrl : null,
+    typeof product.photoUrl2 === "string" ? product.photoUrl2 : null,
+    typeof product.photoUrl3 === "string" ? product.photoUrl3 : null,
+    typeof product.photo1 === "string" ? product.photo1 : null,
+    typeof product.photo2 === "string" ? product.photo2 : null,
+    typeof product.photo3 === "string" ? product.photo3 : null
+  ]);
+
+  const imageCollections = [product.images, product.photos, product.imageUrls].flatMap((collection) =>
+    Array.isArray(collection) ? collection : []
+  );
+
+  const collectionImages = uniqueValidUrls(
+    imageCollections.map((item) => {
+      if (typeof item === "string") {
+        return item;
+      }
+
+      if (!item || typeof item !== "object") {
+        return null;
+      }
+
+      const imageItem = item as Record<string, unknown>;
+      if (typeof imageItem.url === "string") {
+        return imageItem.url;
+      }
+
+      if (typeof imageItem.imageUrl === "string") {
+        return imageItem.imageUrl;
+      }
+
+      return null;
+    })
+  );
+
+  return uniqueValidUrls([...directImages, ...collectionImages]).slice(0, 3);
+}
+
+function normalizeProduct(product: SedifexProduct): SedifexProduct {
+  const imageUrls = extractProductImages(product as unknown as Record<string, unknown>);
+
+  return {
+    ...product,
+    imageUrls,
+    imageUrl: imageUrls[0] || product.imageUrl || null
+  };
+}
+
 export function groupProductsByCategory(products: SedifexProduct[]): Record<string, SedifexProduct[]> {
   return products.reduce<Record<string, SedifexProduct[]>>((accumulator, product) => {
     const category = product.category?.trim() || "Uncategorized";
@@ -133,7 +202,7 @@ export async function getProductsData(): Promise<SedifexProduct[]> {
   );
 
   const products = Array.isArray(payload.products) ? payload.products : FALLBACK_PRODUCTS;
-  return dedupeProducts(products);
+  return dedupeProducts(products).map((product) => normalizeProduct(product));
 }
 
 export async function getTopSellingData(days = 30, limit = 10): Promise<SedifexTopSellingItem[]> {

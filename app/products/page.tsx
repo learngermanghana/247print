@@ -31,6 +31,23 @@ export default async function ProductsPage() {
               <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {items.map((item) => (
                   <li key={`${item.id}-${item.storeId}`} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    {item.imageUrls?.length ? (
+                      <div className="mb-3 grid grid-cols-2 gap-1 overflow-hidden rounded-lg border border-slate-200 bg-white">
+                        <img
+                          src={item.imageUrls[0]}
+                          alt={item.imageAlt || item.name}
+                          className={`w-full object-cover ${item.imageUrls.length > 1 ? "col-span-2 h-28" : "col-span-2 h-40"}`}
+                        />
+                        {item.imageUrls[1] ? (
+                          <img src={item.imageUrls[1]} alt={`${item.imageAlt || item.name} alternate 2`} className="h-20 w-full object-cover" />
+                        ) : null}
+                        {item.imageUrls[2] ? (
+                          <img src={item.imageUrls[2]} alt={`${item.imageAlt || item.name} alternate 3`} className="h-20 w-full object-cover" />
+                        ) : null}
+                      </div>
+                    ) : item.imageUrl ? (
+                      <img src={item.imageUrl} alt={item.imageAlt || item.name} className="mb-3 h-40 w-full rounded-lg object-cover" />
+                    ) : null}
                     <h3 className="text-base font-semibold text-brand-navy">{item.name}</h3>
                     {item.description ? <p className="mt-1 text-sm text-slate-600">{item.description}</p> : null}
                     <div className="mt-3 flex items-center justify-between text-sm">
