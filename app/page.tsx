@@ -51,7 +51,21 @@ export default async function HomePage() {
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {homepageProducts.map((item) => (
               <article key={`${item.id}-${item.storeId}`} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                {item.imageUrl ? (
+                {item.imageUrls?.length ? (
+                  <div className="grid grid-cols-2 gap-1 bg-slate-100">
+                    <img
+                      src={item.imageUrls[0]}
+                      alt={item.imageAlt || item.name}
+                      className={`w-full object-cover ${item.imageUrls.length > 1 ? "col-span-2 h-28" : "col-span-2 h-40"}`}
+                    />
+                    {item.imageUrls[1] ? (
+                      <img src={item.imageUrls[1]} alt={`${item.imageAlt || item.name} alternate 2`} className="h-20 w-full object-cover" />
+                    ) : null}
+                    {item.imageUrls[2] ? (
+                      <img src={item.imageUrls[2]} alt={`${item.imageAlt || item.name} alternate 3`} className="h-20 w-full object-cover" />
+                    ) : null}
+                  </div>
+                ) : item.imageUrl ? (
                   <img src={item.imageUrl} alt={item.imageAlt || item.name} className="h-40 w-full object-cover" />
                 ) : (
                   <div className="flex h-40 items-center justify-center bg-slate-100 text-sm text-slate-500">No image</div>

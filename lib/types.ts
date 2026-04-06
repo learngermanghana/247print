@@ -27,6 +27,7 @@ export type SedifexProduct = {
   stockCount?: number;
   itemType?: string | null;
   imageUrl?: string | null;
+  imageUrls?: string[];
   imageAlt?: string | null;
   updatedAt?: string | null;
 };
