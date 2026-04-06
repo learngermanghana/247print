@@ -17,6 +17,7 @@ export const BUSINESS = {
 export const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
+  { href: "/products", label: "Products" },
   { href: "/about", label: "About" },
   { href: "/quote", label: "Quote" },
   { href: "/contact", label: "Contact" }
