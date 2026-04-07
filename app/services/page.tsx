@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SectionHeading } from "@/components/section-heading";
-import { getProductsByType, getProductsData } from "@/lib/sedifex";
+import { getProductsByType, getProductsData, getTopSellingByType, getTopSellingData } from "@/lib/sedifex";
 
 export const metadata: Metadata = {
   title: "Printing Services",
@@ -12,6 +12,8 @@ export const metadata: Metadata = {
 export default async function ServicesPage() {
   const products = await getProductsData();
   const services = getProductsByType(products, "service");
+  const topSelling = await getTopSellingData(30, 8);
+  const topSellingServices = getTopSellingByType(topSelling, "service");
 
   return (
     <section className="bg-brand-soft py-16 sm:py-20">
@@ -46,6 +48,39 @@ export default async function ServicesPage() {
               </Link>
             </article>
           ))}
+        </div>
+
+        <div className="mt-16">
+          <SectionHeading
+            eyebrow="Top Selling"
+            title="Top selling services from Sedifex integrationTopSelling"
+            description="Includes id, storeId, name, category, description, price, stockCount, itemType, imageUrl/imageUrls, imageAlt, and updatedAt."
+          />
+          <div className="mt-8 space-y-4">
+            {!topSellingServices.length ? (
+              <p className="rounded-2xl border border-slate-200 bg-white p-6 text-slate-600">No top selling services available right now.</p>
+            ) : null}
+            {topSellingServices.map((service) => (
+              <article key={`${service.id}-${service.storeId}`} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <h3 className="text-xl font-bold text-brand-navy">{service.name}</h3>
+                <p className="mt-1 text-sm text-slate-600">{service.description || "No description provided."}</p>
+                <p className="mt-3 text-sm text-slate-700">
+                  <span className="font-semibold">ID:</span> {service.id} · <span className="font-semibold">Store:</span> {service.storeId}
+                </p>
+                <p className="mt-1 text-sm text-slate-700">
+                  <span className="font-semibold">Category:</span> {service.category || "Uncategorized"} ·{" "}
+                  <span className="font-semibold">Type:</span> {service.itemType || "service"}
+                </p>
+                <p className="mt-1 text-sm text-slate-700">
+                  <span className="font-semibold">Price:</span> GHS {service.price ?? 0} · <span className="font-semibold">Stock:</span>{" "}
+                  {service.stockCount ?? 0} · <span className="font-semibold">Qty Sold:</span> {service.qtySold}
+                </p>
+                <p className="mt-1 text-sm text-slate-700">
+                  <span className="font-semibold">Updated:</span> {service.updatedAt || "N/A"}
+                </p>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>
