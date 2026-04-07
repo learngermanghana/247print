@@ -93,6 +93,12 @@ export function getProductsByType(products: SedifexProduct[], type: "service" | 
   return products.filter((product) => normalizeItemType(product.itemType) === normalizedType);
 }
 
+export function getTopSellingByType(items: SedifexTopSellingItem[], type: "service" | "product"): SedifexTopSellingItem[] {
+  const normalizedType = type.toLowerCase();
+
+  return items.filter((item) => normalizeItemType(item.itemType) === normalizedType);
+}
+
 function dedupeProducts(products: SedifexProduct[]): SedifexProduct[] {
   const seen = new Set<string>();
 
@@ -210,12 +216,19 @@ export async function getTopSellingData(days = 30, limit = 10): Promise<SedifexT
 
   if (!config) {
     return FALLBACK_PRODUCTS.slice(0, 4).map((product, index) => ({
+      id: product.id,
+      storeId: product.storeId,
       productId: product.id,
       name: product.name,
       category: product.category,
+      description: product.description,
+      price: product.price,
+      stockCount: product.stockCount,
       imageUrl: product.imageUrl,
+      imageUrls: product.imageUrls,
       imageAlt: product.imageAlt,
       itemType: product.itemType,
+      updatedAt: product.updatedAt,
       qtySold: 20 - index * 3,
       grossSales: 0,
       lastSoldAt: null
@@ -232,19 +245,38 @@ export async function getTopSellingData(days = 30, limit = 10): Promise<SedifexT
 
   if (!Array.isArray(payload.topSelling) || payload.topSelling.length === 0) {
     return FALLBACK_PRODUCTS.slice(0, safeLimit).map((product, index) => ({
+      id: product.id,
+      storeId: product.storeId,
       productId: product.id,
       name: product.name,
       category: product.category,
+      description: product.description,
+      price: product.price,
+      stockCount: product.stockCount,
       imageUrl: product.imageUrl,
+      imageUrls: product.imageUrls,
       imageAlt: product.imageAlt,
       itemType: product.itemType,
+      updatedAt: product.updatedAt,
       qtySold: 20 - index * 3,
       grossSales: 0,
       lastSoldAt: null
     }));
   }
 
-  return payload.topSelling;
+  return payload.topSelling.map((item) => {
+    const normalizedImageUrls = extractProductImages(item as unknown as Record<string, unknown>);
+    const inferredId = item.id || item.productId || `${item.storeId || "unknown-store"}-${item.name}-${item.qtySold}`;
+
+    return {
+      ...item,
+      id: inferredId,
+      storeId: item.storeId || config.storeId,
+      productId: item.productId || inferredId,
+      imageUrls: normalizedImageUrls,
+      imageUrl: normalizedImageUrls[0] || item.imageUrl || null
+    };
+  });
 }
 
 export async function getPromoData(): Promise<SedifexPromo> {

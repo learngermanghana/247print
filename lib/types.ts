@@ -55,13 +55,20 @@ export type SedifexGalleryItem = {
 };
 
 export type SedifexTopSellingItem = {
-  productId: string;
+  id: string;
+  storeId: string;
+  productId?: string;
   name: string;
   category?: string | null;
+  description?: string | null;
+  price?: number | null;
+  stockCount?: number | null;
   imageUrl?: string | null;
+  imageUrls?: string[];
   imageAlt?: string | null;
   itemType?: string | null;
+  updatedAt?: string | null;
   qtySold: number;
-  grossSales: number;
+  grossSales?: number | null;
   lastSoldAt?: string | null;
 };
