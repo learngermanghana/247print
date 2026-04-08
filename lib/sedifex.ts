@@ -83,8 +83,21 @@ async function sedifexFetch<T>(path: string, fallback: T): Promise<T> {
 }
 
 
-function normalizeItemType(itemType?: string | null): string {
-  return (itemType || "").trim().toLowerCase();
+function normalizeItemType(itemType?: string | null): "service" | "product" | "" {
+  const normalized = (itemType || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z]/g, "");
+
+  if (normalized === "service" || normalized === "services") {
+    return "service";
+  }
+
+  if (normalized === "product" || normalized === "products") {
+    return "product";
+  }
+
+  return "";
 }
 
 export function getProductsByType(products: SedifexProduct[], type: "service" | "product"): SedifexProduct[] {
@@ -177,6 +190,7 @@ function normalizeProduct(product: SedifexProduct): SedifexProduct {
 
   return {
     ...product,
+    itemType: normalizeItemType(product.itemType) || product.itemType,
     imageUrls,
     imageUrl: imageUrls[0] || product.imageUrl || null
   };
