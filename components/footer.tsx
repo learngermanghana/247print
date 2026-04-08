@@ -24,7 +24,12 @@ export function Footer() {
             ))}
             <li>
               <Link href="/privacy" className="hover:text-white">
-                Privacy
+                Privacy Policy
+              </Link>
+            </li>
+            <li>
+              <Link href="/terms" className="hover:text-white">
+                Terms of Service
               </Link>
             </li>
           </ul>
