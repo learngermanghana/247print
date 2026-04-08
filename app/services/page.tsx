@@ -53,8 +53,8 @@ export default async function ServicesPage() {
         <div className="mt-16">
           <SectionHeading
             eyebrow="Top Selling"
-            title="Top selling services from Sedifex integrationTopSelling"
-            description="Includes id, storeId, name, category, description, price, stockCount, itemType, imageUrl/imageUrls, imageAlt, and updatedAt."
+            title="Top selling services"
+            description="Service list from the top-selling feed."
           />
           <div className="mt-8 space-y-4">
             {!topSellingServices.length ? (
@@ -63,21 +63,6 @@ export default async function ServicesPage() {
             {topSellingServices.map((service) => (
               <article key={`${service.id}-${service.storeId}`} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                 <h3 className="text-xl font-bold text-brand-navy">{service.name}</h3>
-                <p className="mt-1 text-sm text-slate-600">{service.description || "No description provided."}</p>
-                <p className="mt-3 text-sm text-slate-700">
-                  <span className="font-semibold">ID:</span> {service.id} · <span className="font-semibold">Store:</span> {service.storeId}
-                </p>
-                <p className="mt-1 text-sm text-slate-700">
-                  <span className="font-semibold">Category:</span> {service.category || "Uncategorized"} ·{" "}
-                  <span className="font-semibold">Type:</span> {service.itemType || "service"}
-                </p>
-                <p className="mt-1 text-sm text-slate-700">
-                  <span className="font-semibold">Price:</span> GHS {service.price ?? 0} · <span className="font-semibold">Stock:</span>{" "}
-                  {service.stockCount ?? 0} · <span className="font-semibold">Qty Sold:</span> {service.qtySold}
-                </p>
-                <p className="mt-1 text-sm text-slate-700">
-                  <span className="font-semibold">Updated:</span> {service.updatedAt || "N/A"}
-                </p>
               </article>
             ))}
           </div>
