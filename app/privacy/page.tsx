@@ -4,8 +4,20 @@ import { BUSINESS } from "@/lib/constants";
 import { mailTo } from "@/lib/format";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Read the privacy policy for 247 PRINT HOUSE and understand how personal data is collected and used."
+  title: `Privacy Policy | ${BUSINESS.displayName}`,
+  description:
+    `Read the privacy policy for ${BUSINESS.displayName} and understand how we collect, process, and protect personal information for print services in ${BUSINESS.city}, ${BUSINESS.country}.`,
+  alternates: {
+    canonical: "/privacy"
+  },
+  openGraph: {
+    title: `Privacy Policy | ${BUSINESS.displayName}`,
+    description:
+      `Learn how ${BUSINESS.displayName} handles customer data, cookies, communication records, and privacy requests.`,
+    url: "/privacy",
+    siteName: BUSINESS.displayName,
+    type: "article"
+  }
 };
 
 const sections = [
