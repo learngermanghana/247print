@@ -49,6 +49,9 @@ export function Footer() {
       </div>
       <div className="mx-auto mt-10 max-w-7xl border-t border-slate-700 px-4 pt-5 text-xs text-slate-400 sm:px-6 lg:px-8">
         © {currentYear} {BUSINESS.displayName}. All rights reserved.
+        <p className="mt-2">
+          Developed by Xenom IT Solutions, founders of Sedifex and Falowen App.
+        </p>
       </div>
     </footer>
   );
