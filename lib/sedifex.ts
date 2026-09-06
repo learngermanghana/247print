@@ -1,7 +1,10 @@
 import { SERVICES } from "@/lib/constants";
 import { SedifexGalleryItem, SedifexProduct, SedifexPromo, SedifexTopSellingItem, ServiceItem } from "@/lib/types";
 
-const DEFAULT_REVALIDATE_SECONDS = 60;
+// This site gets low traffic, so refreshing Sedifex data every minute creates
+// unnecessary ISR/origin work. Fifteen minutes keeps products/promos reasonably
+// fresh while substantially reducing Vercel and Sedifex requests.
+const DEFAULT_REVALIDATE_SECONDS = 15 * 60;
 
 const FALLBACK_PRODUCTS: SedifexProduct[] = SERVICES.map((service, index) => ({
   id: `fallback-${index + 1}`,
@@ -81,7 +84,6 @@ async function sedifexFetch<T>(path: string, fallback: T): Promise<T> {
     return fallback;
   }
 }
-
 
 function normalizeItemType(itemType?: string | null): "service" | "product" | "" {
   const normalized = (itemType || "")
