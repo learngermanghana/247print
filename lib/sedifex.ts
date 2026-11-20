@@ -44,6 +44,8 @@ const FALLBACK_PROMO: SedifexPromo = {
 };
 
 function getConfig() {
+  // Low-traffic brochure mode: no Sedifex requests until explicitly re-enabled.
+  if (process.env.SEDIFEX_SYNC_PAUSED !== "false") return null;
   const apiBase = process.env.SEDIFEX_API_BASE_URL;
   const key = process.env.SEDIFEX_INTEGRATION_KEY;
   const storeId = process.env.SEDIFEX_STORE_ID;
@@ -231,24 +233,8 @@ export async function getTopSellingData(days = 30, limit = 10): Promise<SedifexT
   const config = getConfig();
 
   if (!config) {
-    return FALLBACK_PRODUCTS.slice(0, 4).map((product, index) => ({
-      id: product.id,
-      storeId: product.storeId,
-      productId: product.id,
-      name: product.name,
-      category: product.category,
-      description: product.description,
-      price: product.price,
-      stockCount: product.stockCount,
-      imageUrl: product.imageUrl,
-      imageUrls: product.imageUrls,
-      imageAlt: product.imageAlt,
-      itemType: product.itemType,
-      updatedAt: product.updatedAt,
-      qtySold: 20 - index * 3,
-      grossSales: 0,
-      lastSoldAt: null
-    }));
+    // Never fabricate sales activity while the integration is paused.
+    return [];
   }
 
   const safeDays = Math.min(Math.max(days, 1), 365);

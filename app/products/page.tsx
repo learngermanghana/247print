@@ -4,7 +4,7 @@ import { getProductsByType, getProductsData, getTopSellingByType, getTopSellingD
 
 export const metadata: Metadata = {
   title: "Products",
-  description: "Browse current products and services synced from Sedifex integrationProducts."
+  description: "Browse printing products available from 247 PRINT HOUSE."
 };
 
 export default async function ProductsPage() {
@@ -20,7 +20,7 @@ export default async function ProductsPage() {
         <SectionHeading
           eyebrow="Products"
           title="Current product catalog"
-          description="Only products (itemType=product) grouped by category from integrationProducts."
+          description="Browse available print products, organized by category."
         />
 
         <div className="mt-10 space-y-8">
@@ -66,8 +66,8 @@ export default async function ProductsPage() {
         <div className="mt-16">
           <SectionHeading
             eyebrow="Top Selling"
-            title="Top selling products from Sedifex integrationTopSelling"
-            description="Shows product sales leaders with id, storeId, product details, pricing, stock, and images."
+            title="Popular printing products"
+            description="Product information and availability."
           />
           <ul className="mt-8 grid gap-4 sm:grid-cols-2">
             {!topSellingProducts.length ? (

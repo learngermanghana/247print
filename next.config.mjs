@@ -1,5 +1,7 @@
 const nextConfig = {
+  output: "export",
   images: {
+    unoptimized: true,
     // Keep generated image variants cached longer and limit the number of
     // responsive widths Vercel may create for the same source image.
     minimumCacheTTL: 60 * 60 * 24,

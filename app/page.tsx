@@ -41,12 +41,13 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {homepageProducts.length > 0 && (
       <section className="py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             eyebrow="Featured products"
             title="Top products from our current catalog"
-            description="Homepage products are pulled from integrationProducts where itemType is product."
+            description="Available printing products and supplies."
           />
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {homepageProducts.map((item) => (
@@ -80,13 +81,14 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      )}
 
       <section className="bg-slate-50 py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             eyebrow="Promo gallery"
             title="Recent work and campaign visuals"
-            description="Promo gallery images are pulled directly from integrationGallery."
+            description="A selection of print services and sample work."
           />
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {gallery.slice(0, 6).map((item) => (
@@ -104,7 +106,7 @@ export default async function HomePage() {
           <SectionHeading
             eyebrow="Core services"
             title="Complete print solutions for brands, campaigns, and events"
-            description="Homepage services are pulled from integrationProducts where itemType is service."
+            description="Explore our printing services."
             align="center"
           />
           <div className="mt-10">
